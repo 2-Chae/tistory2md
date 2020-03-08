@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from tistory2md_ui import Ui_Dialog
 from backup import BackUp
+import os
 
 class XDialog(QDialog, Ui_Dialog):
     def __init__(self):
@@ -24,7 +25,8 @@ class XDialog(QDialog, Ui_Dialog):
             response = backup.start_backup(i)
 
             if response.status_code == 200:
-                continue
+                backup.save_document(response.json())
+                self.status.append(str(i)+'...done.')
             else:
                 self.status.append('[Error #'+str(i)+']\n'+response.text)
 
