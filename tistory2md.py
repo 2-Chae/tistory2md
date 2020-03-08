@@ -9,7 +9,8 @@ class XDialog(QDialog, Ui_Dialog):
         QDialog.__init__(self)
         # setupUi() 메서드는 화면에 다이얼로그 보여줌
         self.setupUi(self)
-        self.saveDirBtn.clicked.connect(self.sayHello)
+        self.startBtn.clicked.connect(self.sayHello)
+
 
     def sayHello(self):
         self.saveDir.setText('Hello world!')

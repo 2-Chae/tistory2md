@@ -14,13 +14,8 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(586, 296)
-        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(220, 250, 341, 32))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
         self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 20, 541, 221))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 20, 541, 261))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -98,10 +93,12 @@ class Ui_Dialog(object):
         self.status = QtWidgets.QTextBrowser(self.verticalLayoutWidget)
         self.status.setObjectName("status")
         self.verticalLayout.addWidget(self.status)
+        self.startBtn = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.startBtn.setObjectName("startBtn")
+        self.verticalLayout.addWidget(self.startBtn)
+        self.verticalLayout.setStretch(4, 3)
 
         self.retranslateUi(Dialog)
-        self.buttonBox.accepted.connect(Dialog.accept)
-        self.buttonBox.rejected.connect(Dialog.reject)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -120,6 +117,7 @@ class Ui_Dialog(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.startBtn.setText(_translate("Dialog", "START!"))
 
 
 if __name__ == "__main__":
