@@ -105,13 +105,23 @@ class Ui_Dialog(object):
         self.logCheck.setObjectName("logCheck")
         self.horizontalLayout_3.addWidget(self.logCheck)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
-        self.status = QtWidgets.QTextBrowser(self.verticalLayoutWidget)
+        self.status = QtWidgets.QPlainTextEdit(self.verticalLayoutWidget)
+        self.status.setReadOnly(True)
+        self.status.setPlainText("")
         self.status.setObjectName("status")
         self.verticalLayout.addWidget(self.status)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.stopBtn = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.stopBtn.setEnabled(False)
+        self.stopBtn.setAutoDefault(False)
+        self.stopBtn.setObjectName("stopBtn")
+        self.horizontalLayout_4.addWidget(self.stopBtn)
         self.startBtn = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.startBtn.setAutoDefault(True)
         self.startBtn.setObjectName("startBtn")
-        self.verticalLayout.addWidget(self.startBtn)
-        self.verticalLayout.setStretch(5, 3)
+        self.horizontalLayout_4.addWidget(self.startBtn)
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -131,11 +141,7 @@ class Ui_Dialog(object):
         self.tagCheck.setText(_translate("Dialog", "Tag 포함 "))
         self.youtubeCheck.setText(_translate("Dialog", "Youtube"))
         self.logCheck.setText(_translate("Dialog", "log 저장"))
-        self.status.setHtml(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.stopBtn.setText(_translate("Dialog", "STOP"))
         self.startBtn.setText(_translate("Dialog", "START!"))
 
 
