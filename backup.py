@@ -31,7 +31,7 @@ class BackUp():
 
 
     def start_backup(self, i):
-        headers = {'Content-Type': 'application/json; charset=utf-8'} 
+        headers = {'Content-Type': 'application/json;'} 
         url = "https://www.tistory.com/apis/post/read"
         parms = {'access_token': self.token,
                 'blogName': self.blogName,
@@ -44,9 +44,9 @@ class BackUp():
         message = ''
         link_list = []
         ref_list = []
+
         catid   = r['tistory']['item']['categoryId']
         docid   = r['tistory']['item']['id']
-        print(r['tistory']['item']['id'])
         date    = r['tistory']['item']['date']
         title   = r['tistory']['item']['title']
         content = r['tistory']['item']['content']
@@ -67,8 +67,9 @@ class BackUp():
         filename = self.dir + '/' + folder + '/' + date.split(' ')[0] + '-' + title + '.md'
         create_folder(filename)
 
+
         try:
-            final = self.h.handle(content)      
+            final = self.h.handle(content)
             buf = final.split('\n')
             
             for k, line in enumerate(buf):
@@ -114,31 +115,39 @@ class BackUp():
             
             buf.extend(ref_list)
 
-            with open(filename, 'w', encoding='utf8') as f:
-                f.write('---' + '\n')
-                f.write('layout: post' + '\n')
-                f.write('title: \'' + title + '\'\n')
-                if self.checkbox['tag'] and tagsExist:
-                    f.write('tags: [')
-                    for tag in tags:
-                        f.write('\''+ tag + '\',')
-                    f.write(']\n')
-                f.write('---' + '\n')
 
+            try:
+                f = open(filename, 'w', encoding='utf-8')
 
-                for line in buf:
-                    if ('https://youtu.be/' in line) or  ('https://www.youtube.com/' in line): 
-                        # Responsive embedded youtube 넣기
-                        if self.checkbox['youtube']:
-                            f.write('{% youtube '+ line +' %}')
-                        else:
-                            f.write((str(line) + '\n'))
-        
-                     # invalid-file 제거하기 or 거르고 싶은 문자열 제거.
-                    elif ('data-origin-width' in line) or ('invalid-file' in line) or ('---|---' in line) or ('|' == line) or ('https://t1.daumcdn.net/tistory_admin/assets/' in line) or ('origin-width' in line) or ('##]' in line):
-                        continue
+            except:
+                message += 'OSError: [Errno 22]'
+                filename = self.dir + '/' + folder + '/' + date.split(' ')[0] + '-' +docid + '.md'
+                f = open(filename, 'w', encoding='utf-8')
+
+            f.write('---' + '\n')
+            f.write('layout: post' + '\n')
+            f.write('title: \'' + title + '\'\n')
+            if self.checkbox['tag'] and tagsExist:
+                f.write('tags: [')
+                for tag in tags:
+                    f.write('\''+ tag + '\',')
+                f.write(']\n')
+            f.write('---' + '\n')
+
+            for line in buf:
+                if ('https://youtu.be/' in line) or  ('https://www.youtube.com/' in line): 
+                    # Responsive embedded youtube 넣기
+                    if self.checkbox['youtube']:
+                        f.write('{% youtube '+ line +' %}')
                     else:
                         f.write((str(line) + '\n'))
+    
+                 # invalid-file 제거하기 or 거르고 싶은 문자열 제거.
+                elif ('data-origin-width' in line) or ('invalid-file' in line) or ('---|---' in line) or ('|' == line) or ('https://t1.daumcdn.net/tistory_admin/assets/' in line) or ('origin-width' in line) or ('##]' in line):
+                    continue
+                else:
+                    f.write((str(line) + '\n'))
+        
 
             # print(link_list)
             if self.checkbox['image']:

@@ -113,7 +113,7 @@ class Ui_Dialog(object):
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.stopBtn = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.stopBtn.setEnabled(False)
+        # self.stopBtn.setEnabled(False)
         self.stopBtn.setAutoDefault(False)
         self.stopBtn.setObjectName("stopBtn")
         self.horizontalLayout_4.addWidget(self.stopBtn)

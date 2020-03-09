@@ -8,6 +8,7 @@ from PyQt5.QtGui import QIcon
 from backup import BackUp
 import os
 import time
+import platform
 
 
 
@@ -36,14 +37,16 @@ class Worker(QThread):
 
         for i in range(startNum, endNum+1):    
             response = backup.start_backup(i)
-
-            if response.status_code == 200:
-                message = '['+str(i)+']'
+            
+            if response.status_code == 200 and response.json() != None:
+                message = '[#'+str(i)+']'
                 temp = backup.save_document(response.json())
                 if len(temp) == 0:
                     temp = '...done!'
                 # self.status.append('['+str(i)+']'+ message)
                 message += temp
+            elif response.status_code == 200 and response.json() == None:
+                message = '[Error #'+str(i)+'] 비공개 카테고리 입니다.'
             else:
                 # self.status.append('[Error #'+str(i)+']\n'+response.text)
                 message = '[Error #'+str(i)+'] '+response.text
@@ -59,14 +62,19 @@ class XDialog(QDialog, Ui_Dialog):
         QDialog.__init__(self)
         self.setupUi(self)
         self.setWindowTitle("tistory2md v1.0")
-        self.setWindowIcon(QIcon('icon.png'))
 
         self.startBtn.clicked.connect(self.start)
         self.stopBtn.clicked.connect(self.forceStop)
         self.saveDirBtn.clicked.connect(self.openDir)
 
+        # self.stopBtn.setStyleSheet("color: red")
+        # self.stopBtn.setEnabled(False)
+
         self.error_dialog = QtWidgets.QErrorMessage()
-        self.saveDir.setText(os.getcwd())
+        if platform.system() == 'Windows':
+            self.saveDir.setText(os.getcwd())
+        elif platform.system() == 'Darwin':
+            self.saveDir.setText(os.getcwd().split('tistory2md')[0])   
 
         self.worker = Worker()
         self.startBtn.setEnabled(True)
@@ -88,8 +96,10 @@ class XDialog(QDialog, Ui_Dialog):
 
 
         self.startBtn.setEnabled(False)
-        self.stopBtn.setEnabled(True)
-        self.worker.daemon=True
+        # self.stopBtn.setEnabled(True)
+        # self.stopBtn.setStyleSheet("color: red")
+
+        # self.worker.daemon=True
         self.worker.start()
         self.worker.sig_message.connect(self.status.appendPlainText)
         self.worker.sig_end.connect(self.endThread)
@@ -139,13 +149,15 @@ class XDialog(QDialog, Ui_Dialog):
             del self.worker
             self.worker = Worker()
 
-        self.stopBtn.setEnabled(False)
+        # self.stopBtn.setEnabled(False)
+        # self.stopBtn.setStyleSheet("color:")
         self.startBtn.setEnabled(True)
 
     def endThread(self):
         self.startBtn.setEnabled(True)
-        self.stopBtn.setEnabled(False)
-        del self.worker
+        # self.stopBtn.setEnabled(False)
+        # self.stopBtn.setStyleSheet("color:")
+        # del self.worker
         self.worker = Worker()
         if self.logCheck.isChecked():
             f = open('log.txt', 'w')
