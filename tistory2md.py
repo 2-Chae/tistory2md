@@ -57,6 +57,7 @@ class XDialog(QDialog, Ui_Dialog):
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
+        self.setWindowTitle("tistory2md v1.0")
 
         self.startBtn.clicked.connect(self.start)
         self.stopBtn.clicked.connect(self.forceStop)

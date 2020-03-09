@@ -46,10 +46,15 @@ class BackUp():
         ref_list = []
         catid   = r['tistory']['item']['categoryId']
         docid   = r['tistory']['item']['id']
+        print(r['tistory']['item']['id'])
         date    = r['tistory']['item']['date']
         title   = r['tistory']['item']['title']
         content = r['tistory']['item']['content']
-        tags = r['tistory']['item']['tags']['tag']
+
+        tagsExist = False
+        if len(r['tistory']['item']['tags']) > 0:
+            tags = r['tistory']['item']['tags']['tag']
+            tagsExist = True
 
         if not catid:
             catid = 'no_category'
@@ -113,7 +118,7 @@ class BackUp():
                 f.write('---' + '\n')
                 f.write('layout: post' + '\n')
                 f.write('title: \'' + title + '\'\n')
-                if self.checkbox['tag']:
+                if self.checkbox['tag'] and tagsExist:
                     f.write('tags: [')
                     for tag in tags:
                         f.write('\''+ tag + '\',')
