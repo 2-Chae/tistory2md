@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, sip
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QThread 
 from PyQt5.QtWidgets import *
 from tistory2md_ui import Ui_Dialog
+from PyQt5.QtGui import QIcon
 from backup import BackUp
 import os
 import time
@@ -58,6 +59,7 @@ class XDialog(QDialog, Ui_Dialog):
         QDialog.__init__(self)
         self.setupUi(self)
         self.setWindowTitle("tistory2md v1.0")
+        self.setWindowIcon(QIcon('icon.png'))
 
         self.startBtn.clicked.connect(self.start)
         self.stopBtn.clicked.connect(self.forceStop)
