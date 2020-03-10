@@ -1,4 +1,8 @@
 .DS_Store
+dist
+build
+log.txt
+setup.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

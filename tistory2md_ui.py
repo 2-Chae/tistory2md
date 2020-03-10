@@ -140,7 +140,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "tistory2md v1.0"))
         self.label_2.setText(_translate("Dialog", "Blog 주소 :"))
         self.label_3.setText(_translate("Dialog", "https://"))
         self.label_4.setText(_translate("Dialog", ".tistory.com"))
@@ -166,18 +166,35 @@ class Ui_Dialog(object):
     def buttonInit(self):
         self.settingBtn.setEnabled(True)
         self.stopBtn.setEnabled(False)
+        self.stopBtn.setAutoDefault(False)
+        self.stopBtn.setDefault(False)
         self.startBtn.setEnabled(False)
+        self.startBtn.setAutoDefault(False)
+        self.startBtn.setDefault(False)
 
     def pushSettingBtn(self):
         self.stopBtn.setEnabled(True)
+        self.stopBtn.setCheckable(False)
+        self.stopBtn.setAutoDefault(False)
+        self.stopBtn.setDefault(False)
+
         self.startBtn.setEnabled(True)
+        self.startBtn.setCheckable(True)
+        self.startBtn.setDefault(True)
         self.startBtn.setAutoDefault(True)
 
     def pushStartBtn(self):
         self.status.clear()
         self.stopBtn.setEnabled(True)
+        self.stopBtn.setCheckable(True)
+        self.stopBtn.setAutoDefault(False)
+        self.stopBtn.setDefault(False)
+
         self.startBtn.setEnabled(False)
+        self.startBtn.setAutoDefault(False)
+        self.startBtn.setDefault(False)
         self.settingBtn.setEnabled(False)
+        
         
     def openDir(self):
         fname = QFileDialog.getExistingDirectory(self, 'Open Folder', os.getcwd())

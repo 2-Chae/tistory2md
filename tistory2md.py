@@ -13,7 +13,7 @@ class Worker(QObject):
     sig_message = pyqtSignal(str)
     sig_end = pyqtSignal()
     sig_clearStatus = pyqtSignal()
-    
+
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
 
@@ -119,4 +119,4 @@ class Mid(QObject):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     mid = Mid(app)
-    sys.exit(app.exec_())
+    app.exec_()
