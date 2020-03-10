@@ -8,12 +8,16 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+import os
+import platform
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(586, 350)
+
+        self.error_dialog = QtWidgets.QErrorMessage()
         self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 20, 541, 311))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
@@ -101,9 +105,13 @@ class Ui_Dialog(object):
         self.youtubeCheck = QtWidgets.QCheckBox(self.verticalLayoutWidget)
         self.youtubeCheck.setObjectName("youtubeCheck")
         self.horizontalLayout_3.addWidget(self.youtubeCheck)
-        self.logCheck = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.logCheck.setObjectName("logCheck")
-        self.horizontalLayout_3.addWidget(self.logCheck)
+        self.settingBtn = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.settingBtn.setAutoDefault(False)
+        self.settingBtn.setObjectName("settingBtn")
+        self.horizontalLayout_3.addWidget(self.settingBtn)
+        self.horizontalLayout_3.setStretch(0, 1)
+        self.horizontalLayout_3.setStretch(1, 1)
+        self.horizontalLayout_3.setStretch(2, 1)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
         self.status = QtWidgets.QPlainTextEdit(self.verticalLayoutWidget)
         self.status.setReadOnly(True)
@@ -113,17 +121,21 @@ class Ui_Dialog(object):
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.stopBtn = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        # self.stopBtn.setEnabled(False)
+        self.stopBtn.setEnabled(False)
         self.stopBtn.setAutoDefault(False)
         self.stopBtn.setObjectName("stopBtn")
         self.horizontalLayout_4.addWidget(self.stopBtn)
         self.startBtn = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.startBtn.setAutoDefault(True)
+        self.startBtn.setEnabled(False)
+        self.startBtn.setAutoDefault(False)
         self.startBtn.setObjectName("startBtn")
         self.horizontalLayout_4.addWidget(self.startBtn)
         self.verticalLayout.addLayout(self.horizontalLayout_4)
 
         self.retranslateUi(Dialog)
+        self.setPlatformDir()
+        self.buttonInit()
+        
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -140,9 +152,73 @@ class Ui_Dialog(object):
         self.imageCheck.setText(_translate("Dialog", "Image 다운로드"))
         self.tagCheck.setText(_translate("Dialog", "Tag 포함 "))
         self.youtubeCheck.setText(_translate("Dialog", "Youtube"))
-        self.logCheck.setText(_translate("Dialog", "log 저장"))
+        self.settingBtn.setText(_translate("Dialog", "설정 완료"))
         self.stopBtn.setText(_translate("Dialog", "STOP"))
         self.startBtn.setText(_translate("Dialog", "START!"))
+
+    def setPlatformDir(self):
+        self.error_dialog = QtWidgets.QErrorMessage()
+        if platform.system() == 'Windows':
+            self.saveDir.setText(os.getcwd())
+        elif platform.system() == 'Darwin':
+            self.saveDir.setText(os.getcwd().split('tistory2md.app')[0])   
+
+    def buttonInit(self):
+        self.settingBtn.setEnabled(True)
+        self.stopBtn.setEnabled(False)
+        self.startBtn.setEnabled(False)
+
+    def pushSettingBtn(self):
+        self.stopBtn.setEnabled(True)
+        self.startBtn.setEnabled(True)
+        self.startBtn.setAutoDefault(True)
+
+    def pushStartBtn(self):
+        self.status.clear()
+        self.stopBtn.setEnabled(True)
+        self.startBtn.setEnabled(False)
+        self.settingBtn.setEnabled(False)
+        
+    def openDir(self):
+        fname = QFileDialog.getExistingDirectory(self, 'Open Folder', os.getcwd())
+        self.saveDir.setText(fname)
+
+    def inputValidation(self):
+        # isEmpty check
+        if self.blogName.text() == "":
+            self.error_dialog.showMessage('블로그 주소를 입력해주세요.')
+            self.error_dialog.exec_()
+            return False
+        if self.accessToken.text() == "":
+            self.error_dialog.showMessage('Access token을 입력해주세요.')
+            self.error_dialog.exec_()
+            return False
+        if self.startNum.text() == "" or self.endNum.text() == "":
+            self.error_dialog.showMessage('문서 번호를 입력해주세요.')
+            self.error_dialog.exec_()
+            return False
+        
+        # valid check
+        if self.startNum.text() != "":
+            try:
+                int(self.startNum.text())
+            except ValueError:
+                self.error_dialog.showMessage('문서 번호는 숫자만 넣어주세요.')
+                self.error_dialog.exec_()
+                return False
+        if self.endNum.text() != "":
+            try:
+                int(self.endNum.text())
+            except ValueError:
+                self.error_dialog.showMessage('문서 번호는 숫자만 넣어주세요.')
+                self.error_dialog.exec_()
+                return False
+
+        if int(self.startNum.text()) > int(self.endNum.text()):
+            self.error_dialog.showMessage('문서 시작번호는 끝번호보다 작은 수여야 합니다.')
+            self.error_dialog.exec_()
+            return False
+        return True
 
 
 if __name__ == "__main__":

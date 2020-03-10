@@ -6,38 +6,34 @@ from PyQt5.QtWidgets import *
 from tistory2md_ui import Ui_Dialog
 from PyQt5.QtGui import QIcon
 from backup import BackUp
-import os
 import time
-import platform
+import os
 
-
-
-message = ''
-blogName = ''
-accessToken = ''
-saveDir = ''
-checkbox = {}
-startNum = 0
-endNum = 0
-startBtn = None
-
-
-class Worker(QThread):
-    # // 시그널 객체를 하나 생성합니다.
+class Worker(QObject):
     sig_message = pyqtSignal(str)
     sig_end = pyqtSignal()
+    sig_clearStatus = pyqtSignal()
+    
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
 
+    @pyqtSlot(dict)
+    def set(self, d):
+        self.blogName = d['blogName']
+        self.accessToken = d['accessToken']
+        self.saveDir = d['dir']
+        self.checkbox = d['checkbox']
+        self.startNum = d['startNum']
+        self.endNum = d['endNum']
 
-    @pyqtSlot()           
-    def run(self):
-        global message, blogName, accessToken, saveDir, checkbox, startNum, endNum
-        backup = BackUp(blogName, accessToken, saveDir, checkbox)
 
-        for i in range(startNum, endNum+1):    
+    def startWork(self):       
+        self.sig_clearStatus.emit()
+        backup = BackUp(self.blogName, self.accessToken, self.saveDir, self.checkbox)
+
+        for i in range(self.startNum, self.endNum+1):    
             response = backup.start_backup(i)
-            
+            message = ''
             if response.status_code == 200 and response.json() != None:
                 message = '[#'+str(i)+']'
                 temp = backup.save_document(response.json())
@@ -51,124 +47,76 @@ class Worker(QThread):
                 # self.status.append('[Error #'+str(i)+']\n'+response.text)
                 message = '[Error #'+str(i)+'] '+response.text
 
-            # print(message)
-            self.sig_message.emit(message)
-            
+            self.sig_message.emit(message)     
         self.sig_end.emit()
 
 
-class XDialog(QDialog, Ui_Dialog):
-    def __init__(self):
-        QDialog.__init__(self)
-        self.setupUi(self)
-        self.setWindowTitle("tistory2md v1.0")
+class Mid(QObject):
+    sig_settings = pyqtSignal(dict)
 
-        self.startBtn.clicked.connect(self.start)
-        self.stopBtn.clicked.connect(self.forceStop)
-        self.saveDirBtn.clicked.connect(self.openDir)
+    def __init__(self, parent=None):
+        super(self.__class__, self).__init__(parent)
 
-        # self.stopBtn.setStyleSheet("color: red")
-        # self.stopBtn.setEnabled(False)
-
-        self.error_dialog = QtWidgets.QErrorMessage()
-        if platform.system() == 'Windows':
-            self.saveDir.setText(os.getcwd())
-        elif platform.system() == 'Darwin':
-            self.saveDir.setText(os.getcwd().split('tistory2md')[0])   
-
-        self.worker = Worker()
-        self.startBtn.setEnabled(True)
-
-
-    def start(self):
-        global message, blogName, accessToken, saveDir, checkbox, startNum, endNum
+        self.gui = QtWidgets.QDialog()
+        self.ui = Ui_Dialog()       
+        self.ui.setupUi(self.gui)
         
-        self.status.clear()
-        if self.inputValidation() == False:
+        self.worker = Worker()
+        self.worker_thread = QThread()
+        self.worker.moveToThread(self.worker_thread)
+        self.worker_thread.start()
+        self.worker_thread.daemon = True
+
+        self._connectSignals()
+        self.gui.show()
+
+    def transmit(self):
+        if self.ui.inputValidation() == False:
             return
-
-        checkbox = {'image':self.imageCheck.isChecked(), 'tag':self.tagCheck.isChecked(), 'youtube':self.youtubeCheck.isChecked()}
-        blogName = self.blogName.text()
-        accessToken = self.accessToken.text()
-        saveDir = self.saveDir.text()
-        startNum = int(self.startNum.text())
-        endNum = int(self.endNum.text())
-
-
-        self.startBtn.setEnabled(False)
-        # self.stopBtn.setEnabled(True)
-        # self.stopBtn.setStyleSheet("color: red")
-
-        # self.worker.daemon=True
-        self.worker.start()
-        self.worker.sig_message.connect(self.status.appendPlainText)
-        self.worker.sig_end.connect(self.endThread)
-
-
-
-    def inputValidation(self):
-        # isEmpty check
-        if self.blogName.text() == "":
-            self.error_dialog.showMessage('블로그 주소를 입력해주세요.')
-            self.error_dialog.exec_()
-            return False
-        if self.accessToken.text() == "":
-            self.error_dialog.showMessage('Access token을 입력해주세요.')
-            self.error_dialog.exec_()
-            return False
-        if self.startNum.text() == "" or self.endNum.text() == "":
-            self.error_dialog.showMessage('문서 번호를 입력해주세요.')
-            self.error_dialog.exec_()
-            return False
         
-        # valid check
-        if self.startNum.text() != "":
-            try:
-                int(self.startNum.text())
-            except ValueError:
-                self.error_dialog.showMessage('문서 번호는 숫자만 넣어주세요.')
-                self.error_dialog.exec_()
-                return False
-        if self.endNum.text() != "":
-            try:
-                int(self.endNum.text())
-            except ValueError:
-                self.error_dialog.showMessage('문서 번호는 숫자만 넣어주세요.')
-                self.error_dialog.exec_()
-                return False
+        d = {}
+        d['checkbox'] = {'image':self.ui.imageCheck.isChecked(), 'tag':self.ui.tagCheck.isChecked(), 'youtube':self.ui.youtubeCheck.isChecked()}
+        d['blogName'] = self.ui.blogName.text()
+        d['accessToken'] = self.ui.accessToken.text()
+        d['dir'] = self.ui.saveDir.text()
+        d['startNum'] = int(self.ui.startNum.text())
+        d['endNum'] = int(self.ui.endNum.text())
 
-        if int(self.startNum.text()) > int(self.endNum.text()):
-            self.error_dialog.showMessage('문서 시작번호는 끝번호보다 작은 수여야 합니다.')
-            self.error_dialog.exec_()
-            return False
-        return True
+        self.ui.pushSettingBtn()
+        self.sig_settings.emit(d)
 
-    def forceStop(self):
-        if self.worker.isRunning():  
-            self.worker.terminate()  
-            del self.worker
-            self.worker = Worker()
+    def _connectSignals(self):
+        self.ui.startBtn.clicked.connect(self.worker.startWork)
+        self.ui.settingBtn.clicked.connect(self.transmit)
+        self.ui.stopBtn.clicked.connect(self.forceWorkerReset)
+        self.ui.saveDirBtn.clicked.connect(self.openDir)
 
-        # self.stopBtn.setEnabled(False)
-        # self.stopBtn.setStyleSheet("color:")
-        self.startBtn.setEnabled(True)
+        self.sig_settings.connect(self.worker.set)
 
-    def endThread(self):
-        self.startBtn.setEnabled(True)
-        # self.stopBtn.setEnabled(False)
-        # self.stopBtn.setStyleSheet("color:")
-        # del self.worker
-        self.worker = Worker()
-        if self.logCheck.isChecked():
-            f = open('log.txt', 'w')
-            f.write(self.status.toPlainText())
+        self.worker.sig_clearStatus.connect(self.pushStart)
+        self.worker.sig_message.connect(self.ui.status.appendPlainText)
+        self.worker.sig_end.connect(self.forceWorkerReset)
 
     def openDir(self):
-        fname = QFileDialog.getExistingDirectory(self, 'Open Folder', os.getcwd())
-        self.saveDir.setText(fname)
+        fname = QFileDialog.getExistingDirectory(self.gui, 'Open Folder', os.getcwd())
+        self.ui.saveDir.setText(fname)
+
+    @pyqtSlot()
+    def pushStart(self):
+        self.ui.pushStartBtn()
+
+    def forceWorkerReset(self):
+        if self.worker_thread.isRunning():  
+            self.worker_thread.terminate()  
+            self.worker_thread.wait()       
+            self.worker_thread.start()  
+        self.ui.buttonInit()
+        f = open('log.txt', 'w')
+        f.write(self.ui.status.toPlainText())
+
+        
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    dlg = XDialog()
-    dlg.show()
-    app.exec_()
+    mid = Mid(app)
+    sys.exit(app.exec_())
