@@ -18,11 +18,11 @@ def create_folder(filename):
                     raise
 
 class BackUp():
-    def __init__(self, blogName, token, dir, checkbox):
+    def __init__(self, blogName, token, curdir, checkbox):
         ssl._create_default_https_context = ssl._create_unverified_context
         self.blogName = blogName
         self.token = token
-        self.dir = dir
+        self.dir = curdir
         self.checkbox = checkbox
 
         self.h = html2text.HTML2Text()

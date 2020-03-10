@@ -27,11 +27,11 @@ class Worker(QObject):
         self.endNum = d['endNum']
 
 
-    def startWork(self):       
+    def startWork(self):  
         self.sig_clearStatus.emit()
         backup = BackUp(self.blogName, self.accessToken, self.saveDir, self.checkbox)
 
-        for i in range(self.startNum, self.endNum+1):    
+        for i in range(self.startNum, self.endNum+1):                                        
             response = backup.start_backup(i)
             message = ''
             if response.status_code == 200 and response.json() != None:
@@ -65,7 +65,7 @@ class Mid(QObject):
         self.worker_thread = QThread()
         self.worker.moveToThread(self.worker_thread)
         self.worker_thread.start()
-        self.worker_thread.daemon = True
+        # self.worker_thread.daemon = True
 
         self._connectSignals()
         self.gui.show()
