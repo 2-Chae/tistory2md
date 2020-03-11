@@ -4,7 +4,7 @@ html로 구성된 tistory 블로그 글을 markdown 파일로 백업하는 프�
 
 ## 스크린샷
 <div>
-<img width="698" alt="스크린샷 2020-03-10 오후 9 17 20" src="https://user-images.githubusercontent.com/21357649/76311576-9d6ec700-6314-11ea-9989-c4686154e26a.png">
+<img width="698" alt="스크린샷 2020-03-10 오후 9 17 20" src="https://user-images.githubusercontent.com/21357649/76311576-9d6ec700-6314-11ea-9989-c4686154e26a.png"> <br/>
 OS X 버전의 스크린샷입니다. Windows의 경우 다를 수 있습니다.
 
 
@@ -12,7 +12,7 @@ OS X 버전의 스크린샷입니다. Windows의 경우 다를 수 있습니다.
 <a href=https://github.com/2-Chae/tistory2md/releases/tag/v1.0>다운로드</a> 사이트에서 다운로드가 가능합니다. <br/>
 <strong>Windows</strong>의 경우 <strong>tistory.exe.zip</strong>을 다운받으시면 됩니다.<br/>
 <strong>OS X (Mac)</strong>의 경우 <strong>tistory2md.dmg</strong>를 다운받으시면 됩니다. <br/><br/>
-위의 프로그램이 작동하지 않거나 python 파일로 다운받아서 실행시키고 싶으시면 아래 설명 중 python 실행법을 참고하시면 됩니다.(가장 안정적)<br/>
+위의 프로그램이 작동하지 않거나 python 파일로 다운받아서 실행시키고 싶으시면 아래 설명 중 python 실행법을 참고하시면 됩니다.<br/>
 실행 전 반드시 아래의 설명을 읽어보시길 바랍니다.
 
 ## 항목 설명
@@ -38,17 +38,17 @@ tistory 접근을 위한 본인의 access token을 적습니다. Access token을
 ### 1. 항목을 채워줍니다.
 <img width="698" alt="스크린샷 2020-03-10 오후 9 08 25" src="https://user-images.githubusercontent.com/21357649/76312844-37377380-6317-11ea-9132-9d60ea127223.png">
 
-비어있는 항목을 모두 채워줍니다. 
+비어있는 항목을 모두 채워줍니다. <br/><br/>
 
 ### 2. 체크박스 옆 "설정 완료" 버튼을 여러 번 클릭해줍니다.
 <img width="698" alt="스크린샷 2020-03-10 오후 9 08 35" src="https://user-images.githubusercontent.com/21357649/76379944-d6e71700-6394-11ea-81a2-42506ec292d0.png">
 
-<strong>반드시 여러 번</strong> 클릭을 해주세요!! 
+<strong>반드시 여러 번</strong> 클릭을 해주세요!! <br/><br/>
 
 ### 3. Start 버튼을 눌러 백업을 시작합니다.
 <img width="698" alt="스크린샷 2020-03-10 오후 9 08 47" src="https://user-images.githubusercontent.com/21357649/76380053-262d4780-6395-11ea-8de0-097d9d069015.png">
 
-간혹 start 버튼이 파란색으로 보이지 않는다거나 별 반응이 없어 보여도 "설정 완료" 버튼을 여러 번 클릭한 후라면 활성화가 되어있는 상태이니 start 버튼을 눌러주시면 됩니다. 
+간혹 start 버튼이 파란색으로 보이지 않는다거나 별 반응이 없어 보여도 "설정 완료" 버튼을 여러 번 클릭한 후라면 활성화가 되어있는 상태이니 start 버튼을 눌러주시면 됩니다. <br/><br/>
 
 ### 4. 설정한 디렉터리 파일 및 로그 파일을 확인합니다.
 설정한 디렉터리에 백업파일들이 폴더별로 다운받아진 것을 확인한 후 log 화면을 확인합니다.<br/>
