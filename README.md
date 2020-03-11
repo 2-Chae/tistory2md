@@ -71,3 +71,6 @@ $ pip install -r requirements.txt
 ~~~
 $ python tistory2md.py
 ~~~
+
+## 발생할 수 있는 문제
+- 제가 표를 사용하지 않아 표를 제대로 다운로드 못할 수 있습니다. 백업 후 md 파일 확인 필수입니다.
